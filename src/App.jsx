@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import axios from 'axios';
-import "./App.css"
-
-const accessKey = "yG19osGlE-pWf8owp6RNFGRRE5Hd1P7hh3zh1AdNoV4";
+import "./App.css";
 
 function App()  {
   const [inputData, setInputData] = useState("");
@@ -10,6 +8,9 @@ function App()  {
   const [page, setPage] = useState(1);
   const [showMore, setShowMore] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const accessKey = import.meta.env.VITE_UNSPLASH_ACCESS_KEY;
+
 
   const searchImage = async (newSearch = false) => {
     const url = `https://api.unsplash.com/search/photos?page=${page}&query=${inputData}&client_id=${accessKey}`;
@@ -32,20 +33,21 @@ function App()  {
       setLoading(false);
     } catch (error) {
       console.error("Error fetching images:", error);
+      alert("An error occurred while fetching images. Please try again later.");
       setLoading(false);
     }
   };
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    setPage(1); 
-    setImages([]); 
+    setPage(1);
+    setImages([]);
     searchImage(true);
   };
 
   const handleShowMore = () => {
     setPage((prevPage) => prevPage + 1);
-    searchImage(); 
+    searchImage();
   };
 
   return (
@@ -65,7 +67,7 @@ function App()  {
       <div id="image-container">
         {images.map((image, index) => (
           <div className="search-result" key={index}>
-            <img src={image.urls.small} alt={image.alt_description} />
+            <img loading="lazy" src={image.urls.small} alt={image.alt_description} />
             <a href={image.links.html} target="_blank" rel="noopener noreferrer">
               {image.alt_description || "View on Unsplash"}
             </a>
@@ -82,7 +84,6 @@ function App()  {
       )}
     </div>
   );
-};
+}
 
 export default App;
-
